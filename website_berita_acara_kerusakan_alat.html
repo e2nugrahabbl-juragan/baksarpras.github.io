@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berita Acara Kerusakan Alat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            width: 100%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px dashed #333;
+            display: none;
+        }
+        .file-preview {
+            margin-top: 10px;
+        }
+        img.preview {
+            max-width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Berita Acara Kerusakan Alat</h1>
+
+    <label>Nama Alat</label>
+    <input type="text" id="alat">
+
+    <label>Tanggal</label>
+    <input type="date" id="tanggal">
+
+    <label>Lokasi</label>
+    <input type="text" id="lokasi">
+
+    <label>Deskripsi Kerusakan</label>
+    <textarea id="kerusakan"></textarea>
+
+    <label>Upload Bukti (Foto/File)</label>
+    <input type="file" id="file" onchange="previewFile()">
+    <div class="file-preview" id="filePreview"></div>
+
+    <label>Petugas</label>
+    <input type="text" id="petugas">
+
+    <button onclick="generate()">Buat Berita Acara</button>
+
+    <div class="output" id="output"></div>
+</div>
+
+<script>
+function previewFile() {
+    const file = document.getElementById('file').files[0];
+    const preview = document.getElementById('filePreview');
+    preview.innerHTML = "";
+
+    if (file) {
+        const fileType = file.type;
+        const reader = new FileReader();
+
+        if (fileType.startsWith('image/')) {
+            reader.onload = function(e) {
+                preview.innerHTML = `<p>Preview Gambar:</p><img src="${e.target.result}" class="preview">`;
+            }
+            reader.readAsDataURL(file);
+        } else {
+            preview.innerHTML = `<p>File dipilih: ${file.name}</p>`;
+        }
+    }
+}
+
+function generate() {
+    const alat = document.getElementById('alat').value;
+    const tanggal = document.getElementById('tanggal').value;
+    const lokasi = document.getElementById('lokasi').value;
+    const kerusakan = document.getElementById('kerusakan').value;
+    const petugas = document.getElementById('petugas').value;
+    const file = document.getElementById('file').files[0];
+
+    let fileInfo = "";
+
+    if (file) {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                tampilkanOutput(e.target.result);
+            }
+            reader.readAsDataURL(file);
+            return;
+        } else {
+            fileInfo = `<p>File terlampir: ${file.name}</p>`;
+        }
+    }
+
+    tampilkanOutput(null, fileInfo);
+
+    function tampilkanOutput(imgSrc = null, fileInfo = "") {
+        const hasil = `
+            <h2>Berita Acara</h2>
+            <p>Pada hari ini, tanggal <b>${tanggal}</b>, telah terjadi kerusakan pada alat:</p>
+            <p><b>${alat}</b> yang berlokasi di <b>${lokasi}</b>.</p>
+            <p>Deskripsi kerusakan:</p>
+            <p>${kerusakan}</p>
+            ${imgSrc ? `<p><b>Bukti Foto:</b></p><img src="${imgSrc}" class="preview">` : fileInfo}
+            <br>
+            <p>Petugas yang melaporkan:</p>
+            <p><b>${petugas}</b></p>
+        `;
+
+        const outputDiv = document.getElementById('output');
+        outputDiv.style.display = 'block';
+        outputDiv.innerHTML = hasil;
+    }
+}
+</script>
+
+</body>
+</html>
