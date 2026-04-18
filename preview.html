@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Berita Acara Kerusakan Alat</title>
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border: 1px solid #000;
+        }
+        h1 {
+            text-align: center;
+            text-decoration: underline;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background: black;
+            color: white;
+            border: none;
+        }
+        .hasil {
+            margin-top: 30px;
+            border-top: 2px solid black;
+            padding-top: 20px;
+        }
+        .ttd {
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-between;
+        }
+        img {
+            max-width: 300px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>BERITA ACARA KERUSAKAN ALAT</h1>
+
+    <div class="form-section">
+        <label>Nama Alat</label>
+        <input type="text" id="alat">
+
+        <label>Tanggal Kejadian</label>
+        <input type="date" id="tanggal">
+
+        <label>Lokasi</label>
+        <input type="text" id="lokasi">
+
+        <label>Deskripsi Kerusakan</label>
+        <textarea id="kerusakan"></textarea>
+
+        <label>Upload Bukti (Foto)</label>
+        <input type="file" id="foto">
+
+        <label>Nama Petugas</label>
+        <input type="text" id="petugas">
+
+        <button onclick="buatBerita()">Buat Berita Acara</button>
+    </div>
+
+    <div class="hasil" id="hasil"></div>
+</div>
+
+<script>
+function buatBerita() {
+    const alat = document.getElementById('alat').value;
+    const tanggal = document.getElementById('tanggal').value;
+    const lokasi = document.getElementById('lokasi').value;
+    const kerusakan = document.getElementById('kerusakan').value;
+    const petugas = document.getElementById('petugas').value;
+    const foto = document.getElementById('foto').files[0];
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        tampilkan(e.target.result);
+    }
+
+    if (foto) {
+        reader.readAsDataURL(foto);
+    } else {
+        tampilkan(null);
+    }
+
+    function tampilkan(img) {
+        const hasil = `
+        <p>Pada hari ini tanggal <b>${tanggal}</b>, telah terjadi kerusakan alat dengan rincian sebagai berikut:</p>
+
+        <p>Nama Alat: <b>${alat}</b></p>
+        <p>Lokasi: <b>${lokasi}</b></p>
+
+        <p>Deskripsi Kerusakan:</p>
+        <p>${kerusakan}</p>
+
+        ${img ? `<p>Bukti Kerusakan:</p><img src="${img}">` : ""}
+
+        <div class="ttd">
+            <div>
+                <p>Petugas</p>
+                <br><br><br>
+                <p><b>${petugas}</b></p>
+            </div>
+            <div>
+                <p>Mengetahui</p>
+                <br><br><br>
+                <p><b>(....................)</b></p>
+            </div>
+        </div>
+        `;
+
+        document.getElementById('hasil').innerHTML = hasil;
+    }
+}
+</script>
+
+</body>
+</html>
